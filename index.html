@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.9.1/p5.js"></script>
+        <link href="style.css" rel="stylesheet">
+		<script type="text/javascript" src="https://rawgit.com/patriciogonzalezvivo/glslCanvas/master/dist/GlslCanvas.js"></script>
+    </head>
+    <body>
+        <h1>Heat v Resistence</h1>
+        <iframe src="/heat/index.html"></iframe>
+        <br>
+        <h1>Cooper Pairs</h1>
+        <iframe src="/cooper_pairs/index.html"></iframe>
+        <br>
+        <h1>Moire Effect</h1>
+        <script src="script.js"></script>
+		<canvas class="glslCanvas" data-fragment="
+		// Author: Kairos Wong
+		// Title: Mandelbrot Set
+
+		#ifdef GL_ES
+		precision mediump float;
+		#endif
+
+		uniform vec2 u_resolution;
+		#define PI 3.1415926538;
+
+
+
+        //float cx = (u_mouse.x/u_resolution.x * 2. - 1.) * scale;
+        //float cy = (u_mouse.y/u_resolution.y * 2. - 1.) * scale;
+        void main() {
+            vec2 st = gl_FragCoord.xy/u_resolution.xy;
+            st.x *= u_resolution.x/u_resolution.y;
+            float scl = 0.3;
+            
+            vec3 color = vec3(1.);
+            float pointr =  (mod(gl_FragCoord.y - 6.6*scl, 10. * scl) < 3.3 * scl && mod(gl_FragCoord.x, 10.*scl) < 10. * scl ? 1. : 0.);
+            float pointg =  (mod(gl_FragCoord.y - 3.3*scl, 10. * scl) < 3.3 * scl && mod(gl_FragCoord.x, 10.*scl) < 10. * scl ? 1. : 0.);
+            float pointb =  (mod(gl_FragCoord.y - 0.*scl, 10. * scl) < 3.3  * scl && mod(gl_FragCoord.x, 10.*scl) < 10. * scl ? 1. : 0.);
+            // float y = (mod(gl_FragCoord.x, 10. * scl) <5. * scl && mod(gl_FragCoord.y, 10.*scl) < 5. * scl ? 1. : 0.);
+            // float x = (mod(gl_FragCoord.x - 5. * scl, 10. * scl) < 5. * scl && mod(gl_FragCoord.y - 5. * scl, 10.*scl) < 5. * scl ? 1. : 0.);
+        
+            color.xy -= pointr;
+            color.yz -= pointg;
+            color.zx -= pointb;
+            // color.xyz -= x;
+            // color.xyz -= y;
+            
+            gl_FragColor = vec4(color,1.0);
+        }
+
+		" width="400" height="400"></canvas>
+        <h1>Twisted Bilayer Graphene</h1>
+        <iframe src="MATBG/index.html" height="600px" width="600px"></iframe>
+    </body>
+</html>
