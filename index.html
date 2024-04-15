@@ -6,51 +6,104 @@
 		<script type="text/javascript" src="https://rawgit.com/patriciogonzalezvivo/glslCanvas/master/dist/GlslCanvas.js"></script>
     </head>
     <body>
+        
+        <h1>Moire Effect</h1>
+        <script src="script.js"></script>
+		<canvas class="glslCanvas" data-fragment="
+		// Author @patriciogv - 2015 - patriciogonzalezvivo.com
+
+#ifdef GL_ES
+precision mediump float;
+#endif
+#define PI 3.1415
+
+uniform vec2 u_resolution;
+uniform vec2 u_mouse;
+uniform float u_time;
+
+
+mat2 rotate2d(float _angle){
+    return mat2(cos(_angle),-sin(_angle),
+                sin(_angle),cos(_angle));
+}
+
+
+vec2 skew (vec2 st, vec2 ratio) {
+    vec2 r = vec2(0.0);
+    r.x = ratio.x*st.x;
+    r.y = st.y+ratio.y*r.x;
+    return r;
+}
+
+
+vec3 point(vec2 st, float r, vec2 point, vec3 c){
+    vec2 diff = st - point;
+    float dist = length(diff);
+    vec3 color = dist > r ? vec3(0.,0.,0.) : c;
+    return color;
+}
+
+vec3 simplexGrid (vec2 st, float size, vec3 c) {
+    vec3 xyz = vec3(0.0);
+    vec2 p = fract(skew(st, vec2(1.1547,0.5)));
+    //p = fract(st);
+    if (p.x > p.y) {
+        xyz.xy = vec2(p.x,p.y-p.x);
+        xyz.xyz = point(skew(vec2(p.x,p.y), vec2(0.86,-0.577)), size, vec2(0.577,-0),c).xyz;
+        //xyz.z = p.y;
+    } else {
+        xyz.yz = 1.0 - vec2(p.x-p.y,p.y);
+        xyz.x = p.x;
+        xyz.xy = vec2(p.x,p.y-p.x);
+        xyz.xyz = point(skew(vec2(p.x,p.y), vec2(0.86,-0.577)), size, vec2(0.330,0.490),c).xyz;
+    }
+	
+    return xyz;
+}
+
+
+void main() {
+    vec2 st = gl_FragCoord.xy/u_resolution.xy;
+    vec2 mouse = u_mouse.xy/u_resolution.xy;
+    vec3 color = vec3(0.0);
+    float scale = mouse.x > 0. ? mouse.x : 0.9;
+
+    
+    // move space from the center to the vec2(0.0)
+    st -= vec2(0.5);
+    // Scale the space to see the grid
+    st *= 100. * scale;
+    // rotate the space
+    st = rotate2d( -5.1 * sin(mouse.y * 2.) * sin(mouse.y * 2.) * PI / 180. ) * st;
+    // move it back to the original place
+    st += vec2(0.5);
+
+    // Subdivide the grid into to equilateral triangles
+    vec3 c = vec3(1., 1., 0.);
+    vec3 grid1 = simplexGrid(st, 0.2, c);
+    
+    st = gl_FragCoord.xy/u_resolution.xy;
+     // move space from the center to the vec2(0.0)
+    st -= vec2(0.5);
+    // Scale the space to see the grid
+    st *= 100.00 * scale;
+    // rotate the space
+    //st = rotate2d( PI / 180. ) * st;
+    // move it back to the original place
+    st += vec2(0.5);
+    c = vec3(0.,1.,1.);
+    vec3 grid2 = simplexGrid(st, 0.2,c);
+
+    gl_FragColor = vec4(1. - grid1 - grid2, 1.);
+}
+
+		" width="800" height="800"></canvas>
         <h1>Heat v Resistence</h1>
         <iframe src="/heat/index.html"></iframe>
         <br>
         <h1>Cooper Pairs</h1>
         <iframe src="/cooper_pairs/index.html"></iframe>
         <br>
-        <h1>Moire Effect</h1>
-        <script src="script.js"></script>
-		<canvas class="glslCanvas" data-fragment="
-		// Author: Kairos Wong
-		// Title: Mandelbrot Set
-
-		#ifdef GL_ES
-		precision mediump float;
-		#endif
-
-		uniform vec2 u_resolution;
-		#define PI 3.1415926538;
-
-
-
-        //float cx = (u_mouse.x/u_resolution.x * 2. - 1.) * scale;
-        //float cy = (u_mouse.y/u_resolution.y * 2. - 1.) * scale;
-        void main() {
-            vec2 st = gl_FragCoord.xy/u_resolution.xy;
-            st.x *= u_resolution.x/u_resolution.y;
-            float scl = 0.3;
-            
-            vec3 color = vec3(1.);
-            float pointr =  (mod(gl_FragCoord.y - 6.6*scl, 10. * scl) < 3.3 * scl && mod(gl_FragCoord.x, 10.*scl) < 10. * scl ? 1. : 0.);
-            float pointg =  (mod(gl_FragCoord.y - 3.3*scl, 10. * scl) < 3.3 * scl && mod(gl_FragCoord.x, 10.*scl) < 10. * scl ? 1. : 0.);
-            float pointb =  (mod(gl_FragCoord.y - 0.*scl, 10. * scl) < 3.3  * scl && mod(gl_FragCoord.x, 10.*scl) < 10. * scl ? 1. : 0.);
-            // float y = (mod(gl_FragCoord.x, 10. * scl) <5. * scl && mod(gl_FragCoord.y, 10.*scl) < 5. * scl ? 1. : 0.);
-            // float x = (mod(gl_FragCoord.x - 5. * scl, 10. * scl) < 5. * scl && mod(gl_FragCoord.y - 5. * scl, 10.*scl) < 5. * scl ? 1. : 0.);
-        
-            color.xy -= pointr;
-            color.yz -= pointg;
-            color.zx -= pointb;
-            // color.xyz -= x;
-            // color.xyz -= y;
-            
-            gl_FragColor = vec4(color,1.0);
-        }
-
-		" width="400" height="400"></canvas>
         <h1>Twisted Bilayer Graphene</h1>
         <iframe src="MATBG/index.html" height="600px" width="600px"></iframe>
     </body>

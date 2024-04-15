@@ -7,11 +7,14 @@
 
   </head>
   <body>
+    Change the rotate slider and notice the moire patterns forming <br>
+    when you've decided on an angle, change the squish slider, <br> 
+    notice as atoms repel each other, a triangular pattern emerges
     <main>
     <label>squish</label>
-    <input type="range" min="0" max="3" step="0.1" id="squish" onchange="slider()">
+    <input type="range" min="0" max="1.5" step="0.1" id="squish" value="0.0" onchange="slider()">
     <label>rotate</label>
-    <input type="range" min="0" max="1.05" step="0.01" id="rotate" onchange="slider()">
+    <input type="range" min="0" max="0.21" step="0.01" value="0.0" id="rotate" onmousemove="slider()">
     </main>
     <script src="sketch.js"></script>
   </body>

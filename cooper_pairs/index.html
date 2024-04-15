@@ -8,10 +8,9 @@
   </head>
   <body>
     <main>
-    <label>potential</label>
-    <input type="range" min="0" max="10" id="potential" onchange="slider()">
-    <label>electrons</label>
-    <input type="range" min="0" max="30" id="electrons" onchange="slider()">
+    <label>number of electrons</label>
+    <input type="range" min="0" max="10" value="0" id="number" onchange="slider()">
+    <button id="restart" onclick="reset()"> Restart </button>
     </main>
     <script src="sketch.js"></script>
   </body>

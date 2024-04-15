@@ -5,6 +5,8 @@ const k = 0.01;
 const q = 3;
 let frame = 1;
 
+let num_slider = parseInt(document.getElementById("number").value)
+
 function setup() {
   createCanvas(400, 400);
   for(let i = 0; i < 120; i++){
@@ -13,9 +15,6 @@ function setup() {
   }
   electrons.push(new Electron(200, 70, 0))
   electrons.push(new Electron(200, 310, 1))
-  // for(let i = 0; i < 2; i++){
-  //   electrons.push(new Electron(random(400), random(400), i))
-  // }
 }
 
 
@@ -40,16 +39,20 @@ function draw() {
   
 }
 
-function mouseDragged(){
-  for(let a of atoms){
-    a.mouse()
-  }
-  for(let e of electrons){
-    e.mouse()
+function reset(){
+  electrons = []
+  electrons.push(new Electron(200, 70, 0))
+  electrons.push(new Electron(200, 310, 1))
+  for(let i = 0; i < num_slider; i++){
+    electrons.push(new Electron(random(400), random(400), i))
   }
 }
 
+function slider(){
+  num_slider = parseInt(document.getElementById("number").value)
 
+  reset()
+}
 
 class Atom{
   constructor(x,y){
