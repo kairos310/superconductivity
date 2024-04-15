@@ -145,9 +145,9 @@ class Electron{
   update(){
     this.vel.add(this.acc)
     this.pos.add(this.vel)
+    this.pos.x = (this.pos.x + width) % width
+    this.pos.y = (this.pos.y + height) % height
     this.prob = createVector(noise(random()) * this.probr - this.probr / 2,noise(random()) * this.probr - this.probr/2)
-    this.pos.x = (this.pos.x + height) % width
-    this.pos.y = (this.pos.y + height) % width
     if(this.vel.mag() > 5){
       this.vel.setMag(5)
     }
@@ -158,9 +158,11 @@ class Electron{
   }
   show(){
     fill(255,255,255,10)
-    ellipse(this.pos.x, this.pos.y, this.probr)
+    let posx = (this.pos.x + width) % width
+    let posy = (this.pos.y + height) % height
+    ellipse(posx, posy, this.probr)
     fill(0,0,255)
-    ellipse(this.pos.x, this.pos.y, 10)
+    ellipse(posx, posy, 10)
     this.calced = false
   }
   potential(){
